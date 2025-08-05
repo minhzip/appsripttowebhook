@@ -51,9 +51,10 @@ Giải pháp bao gồm hai phần chính:
           // --- THÊM TRƯỜNG '_meta' VỚI THÔNG TIN SPREADSHEET VÀ SHEET VÀO PAYLOAD ---
           const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
           formatted['_meta'] = {
-            spreadsheet_id: spreadsheet.getId(),
-            sheet_name: e.range.getSheet().getName(),
-            spreadsheet_url: spreadsheet.getUrl() // Lấy URL của toàn bộ Spreadsheet
+             spreadsheet_id: spreadsheet.getId(),
+             spreadsheet_url: spreadsheet.getUrl(), // Lấy URL của toàn bộ Spreadsheet
+             sheet_name: e.range.getSheet().getName(),
+             sheet_id: sheet.getSheetId()
           };
           // --- KẾT THÚC THÊM TRƯỜNG ---
 
