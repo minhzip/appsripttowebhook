@@ -28,6 +28,7 @@ function formatDataFromEvent(e) {
   formatted['_meta'] = {
     spreadsheet_id: spreadsheet.getId(),
     sheet_name: e.range.getSheet().getName(),
+    sheet_id: sheet.getSheetId(),
     spreadsheet_url: spreadsheet.getUrl() // Lấy URL của toàn bộ Spreadsheet
   };
   // --- KẾT THÚC THÊM TRƯỜNG ---
@@ -145,6 +146,7 @@ function testWebhookConfiguration(webhookUrl, ui, sheet) {
     spreadsheet_id: spreadsheet.getId(),
     sheet_name: sheet.getName(),
     spreadsheet_url: spreadsheet.getUrl(),
+    sheet_id: sheet.getSheetId(),
     is_test_meta: true // Có thể thêm trường này để phân biệt meta data của test
   };
   // --- KẾT THÚC THÊM TRƯỜNG ---
