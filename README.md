@@ -169,8 +169,9 @@ Giải pháp bao gồm hai phần chính:
           const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
           testData['_meta'] = {
             spreadsheet_id: spreadsheet.getId(),
-            sheet_name: sheet.getName(),
             spreadsheet_url: spreadsheet.getUrl(),
+            sheet_name: sheet.getName(),
+            sheet_id: sheet.getSheetId(),
             is_test_meta: true // Có thể thêm trường này để phân biệt meta data của test
           };
           // --- KẾT THÚC THÊM TRƯỜNG ---
