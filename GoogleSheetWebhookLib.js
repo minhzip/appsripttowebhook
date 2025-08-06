@@ -6,19 +6,19 @@
 /**
  * Định dạng dữ liệu từ Google Sheet để gửi qua webhook.
  * Dữ liệu được chuyển đổi thành một đối tượng JSON.
- * Sẽ bao gồm một trường '_meta' chứa Spreadsheet ID, Sheet Name và Spreadsheet URL trong payload.
+ * Sẽ bao gồm một trường '_meta' chứa Spreadsheet ID, Sheet Name, Sheet ID, Spreadsheet URL và Row Number trong payload.
  *
  * @param {GoogleAppsScript.Events.Sheets.FormSubmit} e Đối tượng sự kiện khi form được submit.
  * @returns {Object} Đối tượng JSON đã được định dạng, bao gồm trường '_meta'.
  */
 function formatDataFromEvent(e) {
-  const rowData = e.namedValues; // Dữ liệu được trả về dưới dạng đối tượng có tên cột là khóa.
-  const headers = e.range.getSheet().getRange(1, 1, 1, e.range.getLastColumn()).getValues()[0];
+  const rowData = e.namedValues;
+  const sheet = e.range.getSheet();
+  const headers = sheet.getRange(1, 1, 1, e.range.getLastColumn()).getValues()[0];
 
   const formatted = {};
   for (const header of headers) {
     if (rowData[header] !== undefined && rowData[header][0] !== undefined) {
-      // rowData trả về mảng 1 phần tử, lấy giá trị đầu tiên
       formatted[header] = rowData[header][0];
     }
   }
@@ -27,13 +27,13 @@ function formatDataFromEvent(e) {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   formatted['_meta'] = {
     spreadsheet_id: spreadsheet.getId(),
-    sheet_name: e.range.getSheet().getName(),
+    sheet_name: sheet.getName(),
     sheet_id: sheet.getSheetId(),
-    spreadsheet_url: spreadsheet.getUrl() // Lấy URL của toàn bộ Spreadsheet
+    spreadsheet_url: spreadsheet.getUrl(),
+    row_number: e.range.getRow() // Thêm số hàng
   };
   // --- KẾT THÚC THÊM TRƯỜNG ---
 
-  // Log để dễ dàng debug
   Logger.log("Dữ liệu đã định dạng: " + JSON.stringify(formatted));
   return formatted;
 }
@@ -113,7 +113,7 @@ function testWebhookConfiguration(webhookUrl, ui, sheet) {
     ui.alert('Cấu hình Webhook', 'Webhook URL chưa được cấu hình cho Sheet này. Vui lòng đặt URL trước.', ui.ButtonSet.OK);
     return;
   }
-
+  // --- LẤY TRƯỜNG CUỐI CÙNG để có row_number ---
   const lastRow = sheet.getLastRow();
   let testData = {};
 
@@ -147,6 +147,7 @@ function testWebhookConfiguration(webhookUrl, ui, sheet) {
     sheet_name: sheet.getName(),
     spreadsheet_url: spreadsheet.getUrl(),
     sheet_id: sheet.getSheetId(),
+    row_number: lastRow, // Sử dụng số hàng cuối cùng cho test
     is_test_meta: true // Có thể thêm trường này để phân biệt meta data của test
   };
   // --- KẾT THÚC THÊM TRƯỜNG ---
